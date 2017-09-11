@@ -58,9 +58,7 @@ def successResp(data):
 
 @app.route('/', methods=['POST'])
 def mnist():
-    global parameters
-    global predict
-
+    global inferer
     d = np.array(request.json)
     if (d.dtype == np.dtype('int64')):
         d = d.astype(np.int32)
@@ -73,9 +71,7 @@ def mnist():
     return successResp(r.tolist()[0])
 
 if __name__ == '__main__':
-    global parameters
-    global predict
-    global infer
+    global inferer
     paddle.init(use_gpu=False, trainer_count=1)
     # define network topology
     images = paddle.layer.data(
@@ -84,9 +80,9 @@ if __name__ == '__main__':
         name='label', type=paddle.data_type.integer_value(10))
     # Here we can build the prediction network in different ways. Please
     # choose one by uncomment corresponding line.
-    # predict = softmax_regression(images)
+    predict = softmax_regression(images)
     # predict = multilayer_perceptron(images)
-    predict = convolutional_neural_network(images)
+    # predict = convolutional_neural_network(images)
     cost = paddle.layer.classification_cost(input=predict, label=label)
     parameters = paddle.parameters.create(cost)
     inferer = paddle.inference.Inference(output_layer=predict, parameters=parameters)
