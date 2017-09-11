@@ -62,7 +62,6 @@ def mnist():
     global predict
 
     d = np.array(request.json)
-    print len(d)
     if (d.dtype == np.dtype('int64')):
         d = d.astype(np.int32)
     elif (d.dtype == np.dtype('float64')):
@@ -70,14 +69,13 @@ def mnist():
     else:
         return errorResp("data type not supported: only supports lists of int or float.")
 
-    r = paddle.infer(
-        output_layer=predict, parameters=parameters, input=[(d,)])
-
+    r = inferer.infer([(d,)])
     return successResp(r.tolist()[0])
 
 if __name__ == '__main__':
     global parameters
     global predict
+    global infer
     paddle.init(use_gpu=False, trainer_count=1)
     # define network topology
     images = paddle.layer.data(
@@ -89,9 +87,8 @@ if __name__ == '__main__':
     # predict = softmax_regression(images)
     # predict = multilayer_perceptron(images)
     predict = convolutional_neural_network(images)
-
     cost = paddle.layer.classification_cost(input=predict, label=label)
-
     parameters = paddle.parameters.create(cost)
-    
+    inferer = paddle.inference.Inference(output_layer=predict, parameters=parameters)
+
     app.run(host='0.0.0.0', port=80)
