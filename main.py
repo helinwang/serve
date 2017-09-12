@@ -50,5 +50,5 @@ if __name__ == '__main__':
     with open(tarfn) as param_f, open(topology_filepath) as topo_f:
         params = paddle.parameters.Parameters.from_tar(param_f)
         inferer = paddle.inference.Inference(parameters=params, fileobj=topo_f)
-    print 'serving on port ', port
+    print 'serving on port', port
     app.run(host='0.0.0.0', port=port)
