@@ -65,13 +65,6 @@ def mnist():
     for i, key in enumerate(request.json):
         d.append(request.json[key])
         feeding[key] = i
-    # d = np.array(d)
-    # if (d.dtype == np.dtype('int64')):
-    #     d = d.astype(np.int32)
-    # elif (d.dtype == np.dtype('float64')):
-    #     d = d.astype(np.float32)
-    # else:
-    #     return errorResp("data type not supported: only supports lists of int or float.")
 
     try:
         r = inferer.infer([d], feeding=feeding)
@@ -87,13 +80,8 @@ if __name__ == '__main__':
         name='pixel', type=paddle.data_type.dense_vector(784))
     label = paddle.layer.data(
         name='label', type=paddle.data_type.integer_value(10))
-    # Here we can build the prediction network in different ways. Please
-    # choose one by uncomment corresponding line.
     predict = softmax_regression(images)
-    # predict = multilayer_perceptron(images)
-    # predict = convolutional_neural_network(images)
     cost = paddle.layer.classification_cost(input=predict, label=label)
     parameters = paddle.parameters.create(cost)
     inferer = paddle.inference.Inference(output_layer=predict, parameters=parameters)
-
     app.run(host='0.0.0.0', port=80)
