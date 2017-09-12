@@ -1,10 +1,10 @@
 import numpy as np
 from flask import Flask, jsonify, request
 import traceback
+import paddle.v2 as paddle
 
 app = Flask(__name__)
 
-import paddle.v2 as paddle
 
 def errorResp(msg):
     return jsonify(code=-1, message=msg)
