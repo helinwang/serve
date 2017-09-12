@@ -1,5 +1,6 @@
 import numpy as np
 from flask import Flask, jsonify, request
+import traceback
 
 app = Flask(__name__)
 
@@ -59,20 +60,28 @@ def successResp(data):
 @app.route('/', methods=['POST'])
 def mnist():
     global inferer
-    d = np.array(request.json)
-    if (d.dtype == np.dtype('int64')):
-        d = d.astype(np.int32)
-    elif (d.dtype == np.dtype('float64')):
-        d = d.astype(np.float32)
-    else:
-        return errorResp("data type not supported: only supports lists of int or float.")
+    feeding = {}
+    d = []
+    for i, key in enumerate(request.json):
+        d.append(request.json[key])
+        feeding[key] = i
+    # d = np.array(d)
+    # if (d.dtype == np.dtype('int64')):
+    #     d = d.astype(np.int32)
+    # elif (d.dtype == np.dtype('float64')):
+    #     d = d.astype(np.float32)
+    # else:
+    #     return errorResp("data type not supported: only supports lists of int or float.")
 
-    r = inferer.infer([(d,)])
-    return successResp(r.tolist()[0])
+    try:
+        r = inferer.infer([d], feeding=feeding)
+    except Exception as e:
+        return errorResp(traceback.format_exc())
+    return successResp(r.tolist())
 
 if __name__ == '__main__':
     global inferer
-    paddle.init(use_gpu=False, trainer_count=1)
+    paddle.init()
     # define network topology
     images = paddle.layer.data(
         name='pixel', type=paddle.data_type.dense_vector(784))
