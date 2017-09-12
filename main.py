@@ -3,6 +3,7 @@ import traceback
 
 import paddle.v2 as paddle
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 tarfn = os.getenv('PARAMETER_TAR_PATH', None)
 
@@ -19,7 +20,7 @@ with_gpu = os.getenv('WITH_GPU', '0') != '0'
 port = int(os.getenv('PORT', '80'))
 
 app = Flask(__name__)
-
+CORS(app)
 
 def errorResp(msg):
     return jsonify(code=-1, message=msg)
@@ -51,4 +52,4 @@ if __name__ == '__main__':
         params = paddle.parameters.Parameters.from_tar(param_f)
         inferer = paddle.inference.Inference(parameters=params, fileobj=topo_f)
     print 'serving on port', port
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port, threaded=True)
