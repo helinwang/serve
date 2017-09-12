@@ -24,7 +24,9 @@ def mnist():
     try:
         r = inferer.infer([d], feeding=feeding)
     except Exception as e:
-        return errorResp(traceback.format_exc())
+        trace = traceback.format_exc()
+        print trace
+        return errorResp(trace)
     return successResp(r.tolist())
 
 if __name__ == '__main__':
