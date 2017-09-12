@@ -14,6 +14,8 @@ topology_filepath = os.getenv('TOPOLOGY_FILE_PATH', None)
 if topology_filepath is None:
     raise ValueError("please specify topology file path with environment variable TOPOLOGY_FILE_PATH")
 
+with_gpu = os.getenv('WITH_GPU', '0') != '0'
+
 port = int(os.getenv('PORT', '80'))
 
 app = Flask(__name__)
@@ -44,7 +46,7 @@ def infer():
 
 
 if __name__ == '__main__':
-    paddle.init()
+    paddle.init(use_gpu=with_gpu)
     with open(tarfn) as param_f, open(topology_filepath) as topo_f:
         params = paddle.parameters.Parameters.from_tar(param_f)
         inferer = paddle.inference.Inference(parameters=params, fileobj=topo_f)

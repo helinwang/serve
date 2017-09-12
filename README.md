@@ -3,7 +3,7 @@
 Start server:
 
 ```bash
-python main.py
+PARAMETER_TAR_PATH=/data/param.tar TOPOLOGY_FILE_PATH=/data/inference_topology.pkl python main.py
 ```
 
 In another terminal:
