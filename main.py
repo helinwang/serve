@@ -6,12 +6,6 @@ app = Flask(__name__)
 
 import paddle.v2 as paddle
 
-
-def softmax_regression(img):
-    predict = paddle.layer.fc(
-        input=img, size=10, act=paddle.activation.Softmax())
-    return predict
-
 def errorResp(msg):
     return jsonify(code=-1, message=msg)
 
@@ -40,7 +34,7 @@ if __name__ == '__main__':
         name='pixel', type=paddle.data_type.dense_vector(784))
     label = paddle.layer.data(
         name='label', type=paddle.data_type.integer_value(10))
-    predict = softmax_regression(images)
+    predict = paddle.layer.fc(input=images, size=10, act=paddle.activation.Softmax())
     cost = paddle.layer.classification_cost(input=predict, label=label)
     parameters = paddle.parameters.create(cost)
     inferer = paddle.inference.Inference(output_layer=predict, parameters=parameters)
