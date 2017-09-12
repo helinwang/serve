@@ -7,12 +7,12 @@ from flask import Flask, jsonify, request
 tarfn = os.getenv('PARAMETER_TAR_PATH', None)
 
 if tarfn is None:
-    raise ValueError("parameter tar file is not specific")
+    raise ValueError("please specify parameter tar file path with environment variable PARAMETER_TAR_PATH")
 
 topology_filepath = os.getenv('TOPOLOGY_FILE_PATH', None)
 
 if topology_filepath is None:
-    raise ValueError("topology file is not specific")
+    raise ValueError("please specify topology file path with environment variable TOPOLOGY_FILE_PATH")
 
 port = int(os.getenv('PORT', '80'))
 
