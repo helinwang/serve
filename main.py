@@ -12,45 +12,6 @@ def softmax_regression(img):
         input=img, size=10, act=paddle.activation.Softmax())
     return predict
 
-
-def multilayer_perceptron(img):
-    # The first fully-connected layer
-    hidden1 = paddle.layer.fc(input=img, size=128, act=paddle.activation.Relu())
-    # The second fully-connected layer and the according activation function
-    hidden2 = paddle.layer.fc(
-        input=hidden1, size=64, act=paddle.activation.Relu())
-    # The thrid fully-connected layer, note that the hidden size should be 10,
-    # which is the number of unique digits
-    predict = paddle.layer.fc(
-        input=hidden2, size=10, act=paddle.activation.Softmax())
-    return predict
-
-
-def convolutional_neural_network(img):
-    # first conv layer
-    conv_pool_1 = paddle.networks.simple_img_conv_pool(
-        input=img,
-        filter_size=5,
-        num_filters=20,
-        num_channel=1,
-        pool_size=2,
-        pool_stride=2,
-        act=paddle.activation.Relu())
-    # second conv layer
-    conv_pool_2 = paddle.networks.simple_img_conv_pool(
-        input=conv_pool_1,
-        filter_size=5,
-        num_filters=50,
-        num_channel=20,
-        pool_size=2,
-        pool_stride=2,
-        act=paddle.activation.Relu())
-    # fully-connected layer
-    predict = paddle.layer.fc(
-        input=conv_pool_2, size=10, act=paddle.activation.Softmax())
-    return predict
-
-
 def errorResp(msg):
     return jsonify(code=-1, message=msg)
 
@@ -75,7 +36,6 @@ def mnist():
 if __name__ == '__main__':
     global inferer
     paddle.init()
-    # define network topology
     images = paddle.layer.data(
         name='pixel', type=paddle.data_type.dense_vector(784))
     label = paddle.layer.data(
